@@ -37,6 +37,6 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, torch.nn.Module):
       nodes_second = torch.index_select(x, 0, edge_label_index[1,:].long())
 
       #predict edges from two nodes
-      pred = self.edge_predictor(nodes_first * nodes_second)
+      pred = self.edge_predictor(nodes_first,  nodes_second)
 
       return pred
