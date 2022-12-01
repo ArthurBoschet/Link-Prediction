@@ -22,6 +22,7 @@ class GATLinkPredModel(BaseGNNLinkPredModel):
       hidden size (int): size of the hidden layers
       num_layers_gat (int): number of GAT layers
       num_layers_mlp (int): number of MLP layers (must be >= 0 and if 0 then dot product of the two nodes embeddings)
+      heads (int): number of attention heads used by the model
       dropout_gat (float): probability of dropout at each gat layer during training (before entering the GAT layer)
       gat_type (str): type of gat layer used ('v1' or 'v2')
       dropout (float): probability of dropout at each MLP layer during training
