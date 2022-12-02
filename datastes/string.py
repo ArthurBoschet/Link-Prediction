@@ -116,6 +116,7 @@ def create_deepsnap_datasets(
 
 
 def get_string_dataset(
+    dg=None,
     probability_threshold=0.7, 
     dir_edges=data +"/9606.protein.links.detailed.v11.5.txt", 
     dir_node_info=data +"/human_string_dataset Full Network default node.csv",
@@ -128,6 +129,7 @@ def get_string_dataset(
     '''
     Function get a string dataset
     Parameters:
+        dg (Union[NoneType, deepsnap.graph.Graph]) if the deepsnap graph is already computed do not recompute
         probability_threshold (float): probability necessary to keep edge from STRING network (kept if p>probability_threshold)
         dir_node_info (str): directory of the string dataset node info data
         functions (list(function(networkx.classes.graph.Graph -> dict(str, float))): feature generators on the graph G
@@ -138,15 +140,16 @@ def get_string_dataset(
     Returns:
         datasets (deepsnap.datasetGraphDataset): network transductive dataset split into train/val/test
     '''
-    G = load_string_network(
-        probability_threshold=probability_threshold, 
-        dir_edges=dir_edges, 
-        dir_node_info=dir_node_info
-    )
-    dg = create_snap_graph(
-        G,
-        functions=functions
-    )
+    if dg is None:
+        G = load_string_network(
+            probability_threshold=probability_threshold, 
+            dir_edges=dir_edges, 
+            dir_node_info=dir_node_info
+        )
+        dg = create_snap_graph(
+            G,
+            functions=functions
+        )
     datasets =  create_deepsnap_datasets(
         dg,
         edge_train_mode = edge_train_mode, 
@@ -154,5 +157,5 @@ def get_string_dataset(
         edge_message_ratio=edge_message_ratio,
         split_ratio=split_ratio
     )
-    return datasets
+    return datasets, dg
 
