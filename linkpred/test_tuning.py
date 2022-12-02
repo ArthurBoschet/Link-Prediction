@@ -1,17 +1,22 @@
+#local packages
+from linkpred.gat_link_pred import GATLinkPredModel
+
+#computing
 import numpy as np
 import torch
-from gat_link_pred import GATLinkPredModel
-from ray.tune.search.hyperopt import HyperOptSearch
-from ray.tune.search import ConcurrencyLimiter
+
+#weigths and biases
+import wandb
+
+#ray-tune
 from ray import tune
 from ray.air import session
-#from ray.tune import Trainable
+from ray.tune.search.hyperopt import HyperOptSearch
+from ray.tune.search import ConcurrencyLimiter
 from ray.air.callbacks.wandb import WandbLoggerCallback
 from ray.tune.integration.wandb import (
-#    WandbTrainableMixin,
     wandb_mixin,
 )
-import wandb
 
 
 

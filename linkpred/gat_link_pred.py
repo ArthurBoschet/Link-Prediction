@@ -1,8 +1,4 @@
-import sys
-sys.path.append('/content/LinkPrediction/models/')
-
-
-from base_gnn_link_pred import BaseGNNLinkPredModel
+from linkpred.base_gnn_link_pred import BaseGNNLinkPredModel
 from encoders.gat_encoder import GATnetwork
 from predictors.mlp_predictor import MultiLayerPerceptron
 from predictors.dot_product_predictor import DotProduct

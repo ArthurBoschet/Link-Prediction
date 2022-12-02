@@ -1,4 +1,4 @@
-from base_link_pred import BaseLinkPredModel
+from linkpred.base_link_pred import BaseLinkPredModel
 import torch
 
 class BaseGNNLinkPredModel(BaseLinkPredModel, torch.nn.Module):
