@@ -9,8 +9,13 @@ from sklearn.metrics import roc_auc_score
 #weights and biases
 import wandb
 
+#ray
+import ray
 
-def train(model, train_step, model_predict, dataloaders, optimizer, args, save_best=False, verbose=True):
+
+def train(model, train_step, model_predict, dataloaders_id, optimizer, args, save_best=False, verbose=True):
+
+    dataloaders = ray.get(dataloaders_id)
 
     #initialize maximum validation value
     val_max = 0
@@ -52,7 +57,8 @@ def train(model, train_step, model_predict, dataloaders, optimizer, args, save_b
     #at the end of training log roc curve
     _ = test(model, model_predict, dataloaders['val'], args, roc=True)
 
-    return best_model
+    return score_val
+
 
 def test(model, model_predict, dataloader, args, roc=False):
 
