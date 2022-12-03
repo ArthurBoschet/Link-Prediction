@@ -22,10 +22,10 @@ def train_gat(config, dataloaders_id):
   #GAT link prediction model
   model = GATLinkPredModel( 
       input_dim, 
-      config["hidden_dim"], 
-      config["num_layers_gat"], 
-      config["num_layers_mlp"], 
-      heads=config["heads"], 
+      int(config["hidden_dim"]), 
+      int(config["num_layers_gat"]), 
+      int(config["num_layers_mlp"]), 
+      heads=int(config["heads"]), 
       dropout_gat=config["dropout_gat"], 
       gat_type=config["gat_type"], 
       dropout=config["dropout"]
