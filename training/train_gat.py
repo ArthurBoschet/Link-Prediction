@@ -10,7 +10,7 @@ from ray.tune.integration.wandb import (
 )
 
 @wandb_mixin
-def train_gat(config, dataloaders_id):
+def train_gat(config):
 
   #print which device is being used to the terminal
   device = config["device"]
