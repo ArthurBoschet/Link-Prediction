@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-class BaseLinkPredModel(ABC):
+from training.trainable import TrainableModel
+
+class BaseLinkPredModel(TrainableModel):
     '''
     Base link prediction model template.
     '''

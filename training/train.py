@@ -13,7 +13,7 @@ import wandb
 import ray
 
 
-def train(model, train_step, model_predict, dataloaders_id, optimizer, args, save_best=False, verbose=True):
+def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True):
 
     dataloaders = ray.get(dataloaders_id)
 
@@ -28,12 +28,12 @@ def train(model, train_step, model_predict, dataloaders_id, optimizer, args, sav
         for i, batch in enumerate(dataloaders['train']):
             
            #take a training step
-           loss = train_step(model, batch, optimizer, args)
+           loss = model.train_step(batch, optimizer, device=args["device"])
 
         #get training loss/ training auroc & validation auroc
         log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Loss: {:.5f}'
-        score_train = test(model, model_predict, dataloaders['train'], args)
-        score_val = test(model, model_predict, dataloaders['val'], args)
+        score_train = test(model, dataloaders['train'], args)
+        score_val = test(model, dataloaders['val'], args)
         
         #log metrics to weigths and biases
         wandb.log({"loss": float(loss.item())})
@@ -55,12 +55,12 @@ def train(model, train_step, model_predict, dataloaders_id, optimizer, args, sav
             
 
     #at the end of training log roc curve
-    _ = test(model, model_predict, dataloaders['val'], args, roc=True)
+    _ = test(best_model, dataloaders['val'], device=args["device"], roc=True)
 
     return score_val
 
 
-def test(model, model_predict, dataloader, args, roc=False):
+def test(model, dataloader, device='cpu', roc=False):
 
     #initialize score and number of batchs to 0
     score = 0
@@ -74,7 +74,7 @@ def test(model, model_predict, dataloader, args, roc=False):
     for batch in dataloader:
 
         #predictions
-        pred = model_predict(model, batch, args)
+        pred = model.predict(batch, device=device)
 
         #get ground truth and predictions and send them to the cpu
         ground_truth = batch.edge_label.flatten().cpu().numpy()

@@ -1,6 +1,6 @@
 from linkpred.gat_link_pred import GATLinkPredModel
 from training.train import train
-from training.train_gnn import train_step_GNN, model_predict_GNN
+#from training.train_gnn import train_step_GNN, model_predict_GNN
 
 import torch
 
@@ -38,6 +38,6 @@ def train_gat(config):
   optimizer = torch.optim.SGD(model.parameters(), lr=config['lr'], momentum=config['momentum'], weight_decay=config['weight_decay'])
 
   #training
-  score_val = train(model, train_step_GNN, model_predict_GNN, config['dataloaders_id'], optimizer, config, save_best=False, verbose=True)
+  score_val = train(model, config['dataloaders_id'], optimizer, config, save_best=False, verbose=True)
   session.report({"auroc_validation": score_val})
   return

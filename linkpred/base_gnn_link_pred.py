@@ -40,3 +40,40 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, torch.nn.Module):
       pred = self.edge_predictor(nodes_first,  nodes_second)
 
       return pred
+
+
+    def train_step(self, batch, optimizer, device='cpu'):
+      '''training step function for model (for each batch)'''
+      #set the batch to the device (cpu or gpu)
+      batch.to(device)
+
+      #set the model to training mode
+      self.train()
+
+      #no gradient accumulation
+      optimizer.zero_grad()
+
+      #get predictions from training batch
+      pred = self.forward(batch)
+
+      #get loss
+      loss = self.loss(pred, batch.edge_label.type(pred.dtype))
+
+      #gradient descent step
+      loss.backward()
+      optimizer.step()
+
+      return loss
+
+
+    def predict(self, batch, device='cpu'):
+      '''Prediction function has to be implemented'''
+      #set the model to eval mode
+      self.eval()
+
+      #send batch to proper device and evaluate predictions
+      batch.to(device)
+      pred = self.forward(batch)
+      pred = torch.sigmoid(pred)
+
+      return pred
