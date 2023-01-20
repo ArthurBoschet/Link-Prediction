@@ -1,7 +1,8 @@
 from linkpred.base_link_pred import BaseLinkPredModel
+from training.trainable import TrainableModel
 import torch
 
-class BaseGNNLinkPredModel(BaseLinkPredModel, torch.nn.Module):
+class BaseGNNLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
     '''
     Base GNN link prediction model template.
     '''
