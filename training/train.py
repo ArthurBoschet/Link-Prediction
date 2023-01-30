@@ -28,7 +28,7 @@ def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True)
         for i, batch in enumerate(dataloaders['train']):
             
            #take a training step
-           loss = model.train_step(batch, optimizer, device=args["device"])
+           loss = model.train_step(batch, optimizer)
 
         #get training loss/ training auroc & validation auroc
         log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Loss: {:.5f}'
@@ -55,12 +55,12 @@ def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True)
             
 
     #at the end of training log roc curve
-    _ = test(best_model, dataloaders['val'], device=args["device"], roc=True)
+    _ = test(best_model, dataloaders['val'], roc=True)
 
     return score_val
 
 
-def test(model, dataloader, device='cpu', roc=False):
+def test(model, dataloader, roc=False):
 
     #initialize score and number of batchs to 0
     score = 0
@@ -74,7 +74,7 @@ def test(model, dataloader, device='cpu', roc=False):
     for batch in dataloader:
 
         #predictions
-        pred = model.predict(batch, device=device)
+        pred = model.predict(batch)
 
         #get ground truth and predictions and send them to the cpu
         ground_truth = batch.edge_label.flatten().cpu().numpy()
