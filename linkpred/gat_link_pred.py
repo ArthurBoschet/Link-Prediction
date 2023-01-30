@@ -10,6 +10,7 @@ class GATLinkPredModel(BaseGNNLinkPredModel):
                hidden_size, 
                num_layers_gat, 
                num_layers_mlp, 
+               device='cpu',
                heads=1, 
                dropout_gat=0, 
                gat_type='v2', 
@@ -22,6 +23,7 @@ class GATLinkPredModel(BaseGNNLinkPredModel):
       hidden size (int): size of the hidden layers
       num_layers_gat (int): number of GAT layers
       num_layers_mlp (int): number of MLP layers (must be >= 0 and if 0 then dot product of the two nodes embeddings)
+      device (torch.cuda.device or str): device used by the model (gpu or cpu)
       heads (int): number of attention heads used by the model
       dropout_gat (float): probability of dropout at each gat layer during training (before entering the GAT layer)
       gat_type (str): type of gat layer used ('v1' or 'v2')
@@ -39,12 +41,14 @@ class GATLinkPredModel(BaseGNNLinkPredModel):
     self.gat_type = gat_type
     self.dropout = dropout
     
-    super(GATLinkPredModel, self).__init__()
+    super(GATLinkPredModel, self).__init__(device)
 
   def create_node_encoder(self):
+    '''creates a node encoder with a GAT Network'''
     return GATnetwork(self.input_size, self.hidden_size, self.num_layers_gat, heads=self.heads, dropout=self.dropout_gat, gat_type=self.gat_type)
 
   def create_edge_predictor(self):
+    '''creates an edge predictor with an MLP'''
     if self.num_layers_mlp > 0:
       return MultiLayerPerceptron(self.hidden_size*self.heads, self.hidden_size, self.num_layers_mlp, dropout=self.dropout)
     else:

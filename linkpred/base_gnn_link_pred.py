@@ -6,7 +6,7 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
     '''
     Base GNN link prediction model template.
     '''
-    def __init__(self):
+    def __init__(self, device):
       '''
       Sets up a binary cross entropy loss function combined with final sigmoid layer for added numerical stability
       '''
@@ -14,6 +14,9 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
 
       #combines sigmoid and BCE into one function but is more numerically stable
       self.loss_fn = torch.nn.BCEWithLogitsLoss()
+
+      #setup device
+      self.device = device
 
     def loss(self, pred, label):
       return self.loss_fn(pred, label)
@@ -38,15 +41,15 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       nodes_second = torch.index_select(x, 0, edge_label_index[1,:].long())
 
       #predict edges from two nodes
-      pred = self.edge_predictor(nodes_first,  nodes_second)
+      pred = self.edge_predictor(nodes_first, nodes_second)
 
       return pred
 
 
-    def train_step(self, batch, optimizer, device='cpu'):
+    def train_step(self, batch, optimizer):
       '''training step function for model (for each batch)'''
       #set the batch to the device (cpu or gpu)
-      batch.to(device)
+      batch.to(self.device)
 
       #set the model to training mode
       self.train()
@@ -67,13 +70,13 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       return loss
 
 
-    def predict(self, batch, device='cpu'):
+    def predict(self, batch):
       '''Prediction function has to be implemented'''
       #set the model to eval mode
       self.eval()
 
       #send batch to proper device and evaluate predictions
-      batch.to(device)
+      batch.to(self.device)
       pred = self.forward(batch)
       pred = torch.sigmoid(pred)
 
