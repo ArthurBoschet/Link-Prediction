@@ -25,6 +25,7 @@ def train_gat(config):
       int(config["hidden_dim"]), 
       int(config["num_layers_gat"]), 
       int(config["num_layers_mlp"]), 
+      device=config["device"],
       heads=int(config["heads"]), 
       dropout_gat=config["dropout_gat"], 
       gat_type=config["gat_type"], 
