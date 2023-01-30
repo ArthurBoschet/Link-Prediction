@@ -21,7 +21,7 @@ class FastEmbedder():
     return self._embed(right_nodes, left_nodes)
 
 
-class Node2VecEncode(torch.nn.module):
+class Node2VecEncode(torch.nn.Module):
     def __init__(
         self,
         graph,
