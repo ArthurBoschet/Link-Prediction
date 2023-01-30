@@ -1,12 +1,9 @@
 from linkpred.base_link_pred import BaseLinkPredModel
+from encoders.node2vec_encoder import Node2VecEncode
 from predictors.mlp_predictor import MultiLayerPerceptron
 from predictors.dot_product_predictor import DotProduct
 from training.trainable import TrainableModel
-from node2vec import Node2Vec
-from gensim.models import Word2Vec
-import networkx as nx
 import torch
-import os
 
 
 class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
@@ -15,7 +12,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
     '''
     def __init__(
         self, 
-        G,
+        graph,
         input_size,
         walk_length,
         p,
@@ -31,7 +28,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       Sets up a binary cross entropy loss function combined with final sigmoid layer for added numerical stability. 
       The node2vec model is also fitted during the instanciation
       Parameters:
-        G (deepsnap.graph.Graph): DeepSnap training graph used for embedding the nodes
+        graph (deepsnap.graph.Graph): DeepSnap training graph used for embedding the nodes
         input_size (int): size of the input vector
         walk_length (int): length of the random walks
         p (float): return parameter
@@ -57,7 +54,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       self.walk_length = walk_length
       self.p = p
       self.q = q
-      self.G = G
+      self.graph = graph
       self.input_size = input_size
       self.walk_length = walk_length
 
@@ -71,7 +68,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
 
 
     def create_node_encoder(self):
-      return
+      return Node2VecEncode(self.graph, self.input_size, self.walk_length, self.p, self.q, self.directory, self.species)
 
 
     def create_edge_predictor(self):
