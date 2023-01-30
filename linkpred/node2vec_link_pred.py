@@ -21,6 +21,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
         hidden_size,
         device,
         dropout=0,
+        batch_size=128,
         directory='drive/MyDrive/protein_network/string/human/n2v_embeddings',
         species='human',
         ):
@@ -58,8 +59,9 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       self.input_size = input_size
       self.walk_length = walk_length
 
-      #device
+      #device and training
       self.device = device
+      self.batch_size = batch_size
 
       super(Node2VecLinkPredModel, self).__init__()
 

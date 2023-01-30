@@ -26,6 +26,7 @@ def train_node2vec(config):
     int(config["hidden_size"]),
     config["device"],
     dropout=config["dropout"],
+    batch_size=config["batch_size"],
     directory=config["directory"],
     species=config["species"],
   ).to(config["device"])
