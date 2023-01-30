@@ -63,7 +63,7 @@ class Node2VecEncode(torch.nn.Module):
             G.add_edges_from(self.get_edge_list(graph))
 
             #generate walks
-            node2vec = Node2Vec(G, dimensions=self.input_size, walk_length=self.walk_length, num_walks=50, workers=1, p=self.p, q=self.q)
+            node2vec = Node2Vec(G, dimensions=input_size, walk_length=walk_length, num_walks=50, workers=1, p=p, q=q)
 
             #train node2vec model
             n2w_model = node2vec.fit(window=7, min_count=1)
