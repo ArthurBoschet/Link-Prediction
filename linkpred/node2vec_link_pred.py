@@ -57,7 +57,6 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       self.q = q
       self.graph = graph
       self.input_size = input_size
-      self.walk_length = walk_length
 
       #device and training
       self.device = device
