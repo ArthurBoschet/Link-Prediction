@@ -67,7 +67,7 @@ class BaseGNNLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       loss.backward()
       optimizer.step()
 
-      return loss
+      return loss.item()
 
 
     def predict(self, batch):

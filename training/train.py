@@ -36,13 +36,13 @@ def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True)
         score_val = test(model, dataloaders['val'], args)
         
         #log metrics to weigths and biases
-        wandb.log({"loss": float(loss.item())})
+        wandb.log({"loss": float(loss)})
         wandb.log({"auroc_train": score_train})
         wandb.log({"auroc_val": score_val})
 
         #print if set to verbose
         if verbose:
-          print(log.format(epoch, score_train, score_val, loss.item()))
+          print(log.format(epoch, score_train, score_val, loss))
 
         #delete batch and loss
         del batch
