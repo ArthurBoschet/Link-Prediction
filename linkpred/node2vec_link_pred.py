@@ -113,8 +113,12 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       #set the batch to the device (cpu or gpu)
       data.to(self.device)
 
-      batches_edges = torch.split(data.edge_label_index, self.batch_size, dim=1)
-      batches_targets = torch.split(data.edge_label, self.batch_size, dim=0)
+      indices = torch.randperm(data.edge_label.size()[0])
+
+      batches_edges = torch.split(data.edge_label_index[:, indices], self.batch_size, dim=1)
+      batches_targets = torch.split(data.edge_label[indices], self.batch_size, dim=0)
+
+      loss_avg = 0
 
       for i, (batch, edge_label) in enumerate(zip(batches_edges, batches_targets)):
 
@@ -133,8 +137,9 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
         #gradient descent step
         loss.backward()
         optimizer.step()
+        loss_avg += loss.item()
 
-      return loss
+      return loss_avg/(i+1)
 
 
     def predict(self, batch):
