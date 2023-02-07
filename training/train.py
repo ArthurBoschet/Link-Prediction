@@ -13,7 +13,7 @@ import wandb
 import ray
 
 
-def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True):
+def train(model, dataloaders_id, optimizer, args, verbose=True):
 
     dataloaders = ray.get(dataloaders_id)
 
@@ -49,7 +49,7 @@ def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True)
         del loss
 
         #is save_best is true then we save the best model
-        if val_max < score_val and save_best:
+        if val_max < score_val:
             val_max = score_val
             best_model = deepcopy(model)
             
