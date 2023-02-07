@@ -57,7 +57,7 @@ def train(model, dataloaders_id, optimizer, args, save_best=False, verbose=True)
     #at the end of training log roc curve
     _ = test(best_model, dataloaders['val'], roc=True)
 
-    return score_val
+    return val_max
 
 
 def test(model, dataloader, roc=False):
