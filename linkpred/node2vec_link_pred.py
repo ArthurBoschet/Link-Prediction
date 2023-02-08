@@ -13,6 +13,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
     def __init__(
         self, 
         graph,
+        seed,
         input_size,
         walk_length,
         p,
@@ -30,6 +31,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       The node2vec model is also fitted during the instanciation
       Parameters:
         graph (deepsnap.graph.Graph): DeepSnap training graph used for embedding the nodes
+        seed (int): the seed used to create dataset
         input_size (int): size of the input vector
         walk_length (int): length of the random walks
         p (float): return parameter
@@ -62,6 +64,9 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
       self.device = device
       self.batch_size = batch_size
 
+      #seed
+      self.seed = seed
+
       super(Node2VecLinkPredModel, self).__init__()
 
       #combines sigmoid and BCE into one function but is more numerically stable
@@ -69,7 +74,7 @@ class Node2VecLinkPredModel(BaseLinkPredModel, TrainableModel, torch.nn.Module):
 
 
     def create_node_encoder(self):
-      return Node2VecEncode(self.graph, self.input_size, self.walk_length, self.p, self.q, self.directory, self.species)
+      return Node2VecEncode(self.graph, self.input_size, self.walk_length, self.p, self.q, self.directory, self.species, self.seed)
 
 
     def create_edge_predictor(self):
