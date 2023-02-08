@@ -1,6 +1,7 @@
 from node2vec import Node2Vec
 from gensim.models import Word2Vec
 import networkx as nx
+import numpy as np
 import torch
 import os
 
@@ -31,6 +32,7 @@ class Node2VecEncode(torch.nn.Module):
         q,
         directory,
         species,
+        seed,
         ):
         '''
         Node2vec encoder
@@ -42,6 +44,7 @@ class Node2VecEncode(torch.nn.Module):
             q (float): inout parameter
             directory (str): the directory where the node2vec embeddings are stored
             species (str): the species evaluated
+            seed (int): the seed used to create dataset
 
         '''
         super(Node2VecEncode, self).__init__()
@@ -50,7 +53,7 @@ class Node2VecEncode(torch.nn.Module):
         os.makedirs(directory, exist_ok=True) 
 
         #get node2vec directory
-        n2v_dir = directory + f"/{species}_embedding_model_dim:{input_size}_len:{walk_length}_p:{p}_q:{q}"
+        n2v_dir = directory + f"/{species}_embedding_model_dim:{input_size}_len:{walk_length}_p:{p}_q:{q}_seed:{seed}"
 
         #try to load the model from the directory if it already exists 
         try:
@@ -59,7 +62,6 @@ class Node2VecEncode(torch.nn.Module):
         #if the model doesn't exist then create the model and save it
         except:
             G = nx.Graph()
-            G.add_nodes_from(list(graph.node_label_index.numpy()))
             G.add_edges_from(self.get_edge_list(graph))
 
             #generate walks
@@ -76,6 +78,19 @@ class Node2VecEncode(torch.nn.Module):
 
         #instanciate the edge embedder
         self.embedder = FastEmbedder(keyed_vectors=model.wv)
+
+        #get edges of the graph
+        edges = graph.edge_index.numpy()
+
+        #get the nodes contained in the message passing graph
+        nodes = set(np.hstack([edges[0], edges[1]]).tolist())
+
+        #get the nodes not included in the message passing graph
+        nodes_not_seen = [node for node in graph.node_label_index.numpy() if node not in nodes]
+        assert len(nodes_not_seen) + len(nodes) == len(graph.node_label_index.numpy())
+
+        #add the missing nodes to the keyed vectors (all 0's)
+        self.embedder.keyed_vectors.add_vectors(nodes_not_seen, [np.zeros(input_size, dtype=np.float32) for _ in range(len(nodes_not_seen))])
 
 
     def get_edge_list(self, graph):
