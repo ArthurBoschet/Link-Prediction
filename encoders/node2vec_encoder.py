@@ -22,7 +22,7 @@ class FastEmbedder():
     return self._embed(right_nodes, left_nodes)
 
 
-class Node2VecEncode(torch.nn.Module):
+class Node2VecEncode():
     def __init__(
         self,
         graph,
@@ -104,5 +104,5 @@ class Node2VecEncode(torch.nn.Module):
         return [tuple(e) for e in graph.edge_index.numpy().T]
 
     
-    def forward(self, e):
+    def __call__(self, e):
         return self.embedder[e]
