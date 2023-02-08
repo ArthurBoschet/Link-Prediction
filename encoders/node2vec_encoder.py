@@ -2,7 +2,6 @@ from node2vec import Node2Vec
 from gensim.models import Word2Vec
 import networkx as nx
 import numpy as np
-import torch
 import os
 
 class FastEmbedder():
