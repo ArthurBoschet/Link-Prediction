@@ -46,8 +46,6 @@ class Node2VecEncode():
             seed (int): the seed used to create dataset
 
         '''
-        super(Node2VecEncode, self).__init__()
-
          #create directory
         os.makedirs(directory, exist_ok=True) 
 
